@@ -121,6 +121,14 @@ typedef struct
 #define SPI_BUSY_IN_RX							1
 #define SPI_BUSY_IN_TX							2
 
+/*
+ * Possible SPI application events
+ */
+
+#define SPI_EVENT_TX_CMPLT 						1
+#define SPI_EVENT_RX_CMPLT 						2
+#define SPI_EVENT_OVR_CMPLT 					3
+
 /*********************************************************************************************
  * 							APIs supported by this driver									 *
  * 			For more information about the APIs check the function definitions				 *
@@ -165,5 +173,14 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi);
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi);
 
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
+void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx);
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle);
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
+
+/*
+ * Application callback
+ */
+
+void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t AppEv);
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */
