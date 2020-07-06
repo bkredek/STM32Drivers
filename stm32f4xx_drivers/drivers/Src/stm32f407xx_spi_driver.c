@@ -586,14 +586,14 @@ static void spi_rxne_interrupt_handle(SPI_Handle_t *pSPIHandle) {
 		// 16 bit DFF
 		*((uint16_t *)(pSPIHandle->pRxBuffer)) = (uint16_t)pSPIHandle->pSPIx->DR;
 		pSPIHandle->RxLen -= 2;
-		pSPIHandle->pRxBuffer--;
-		pSPIHandle->pRxBuffer--;
+		pSPIHandle->pRxBuffer++;
+		pSPIHandle->pRxBuffer++;
 	}else
 	{
 		// 8 bit DFF
 		*(pSPIHandle->pRxBuffer) = (uint8_t) pSPIHandle->pSPIx->DR;
 		pSPIHandle->RxLen--;
-		pSPIHandle->pRxBuffer--;
+		pSPIHandle->pRxBuffer++;
 	}
 
 	if(!pSPIHandle->RxLen) {
