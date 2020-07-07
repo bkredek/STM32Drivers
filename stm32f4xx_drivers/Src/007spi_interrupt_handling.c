@@ -6,6 +6,7 @@
  */
 #include "stm32f407xx.h"
 #include <string.h>
+#include <stdio.h>
 
 //command codes
 #define COMMAND_LED_CTRL          	0x50
