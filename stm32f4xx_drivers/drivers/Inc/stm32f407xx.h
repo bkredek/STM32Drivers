@@ -265,6 +265,10 @@ typedef struct {
 #define SPI2								((SPI_RegDef_t*) SPI2_BASEADDR)
 #define SPI3								((SPI_RegDef_t*) SPI3_BASEADDR)
 
+#define I2C1								((I2C_RegDef_t*) I2C1_BASEADDR)
+#define I2C2								((I2C_RegDef_t*) I2C2_BASEADDR)
+#define I2C3								((I2C_RegDef_t*) I2C3_BASEADDR)
+
 /*
  * Clock Enable Macros for GPIOx peripherals
  */
@@ -472,7 +476,7 @@ typedef struct {
 #define I2C_CR1_ENARP						4
 #define I2C_CR1_ENPEC						5
 #define I2C_CR1_ENGC						6
-#define I2C_CR1_NSTR						7
+#define I2C_CR1_NOSTRECH					7
 #define I2C_CR1_START						8
 #define I2C_CR1_STOP						9
 #define I2C_CR1_ACK							10
@@ -532,6 +536,20 @@ typedef struct {
 #define I2C_SR2_SMBHOST						6
 #define I2C_SR2_DUALF						7
 #define I2C_SR2_PEC							8
+
+/*
+ * Bit position I2C_CCR
+ */
+
+#define I2C_CCR_CCR							0
+#define I2C_CCR_DUTY						14
+#define I2C_CCR_FS							15
+
+/*
+ * Bit position I2C_TRISE
+ */
+
+#define I2C_TRISE_TRISE						0
 
 /*
  * Macros to reset SPIx peripherals
