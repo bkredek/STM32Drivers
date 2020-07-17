@@ -359,6 +359,6 @@ static void I2C_ExecuteAddressPhase(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddr) {
 
 static void I2C_ClearADDRFlag(I2C_RegDef_t *pI2Cx) {
 	uint32_t dummyRead = pI2Cx->SR1;
-	//uint32_t dummyRead = pI2Cx->SR2;
+	dummyRead = pI2Cx->SR2;
 	(void)dummyRead;
 }
