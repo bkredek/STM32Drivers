@@ -72,6 +72,32 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 }
 
 /********************************************************
+ * @fn					- SPI_PeripheralControl
+ *
+ * @brief				- API to enable SPI
+ *
+ * @param[in]			- handle to the SPIx
+ * @param[in]			- enable or disable
+ * @param[in]			- none
+ *
+ * @return				- none
+ *
+ * @Note				- none
+ *
+ ********************************************************/
+
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
+{
+	if(EnOrDi == ENABLE)
+	{
+		pSPIx->CR1 |= ( 1 << SPI_CR1_SPE);
+	}else
+	{
+		pSPIx->CR1 &= ~( 1 << SPI_CR1_SPE);
+	}
+}
+
+/********************************************************
  * @fn					- SPI_Init
  *
  * @brief				- Initializing SPIx
@@ -317,32 +343,6 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
 	// 4. Data transmission will be handled by ISR code
 
 	return state;
-}
-
-/********************************************************
- * @fn					- SPI_PeripheralControl
- *
- * @brief				- API to enable SPI
- *
- * @param[in]			- handle to the SPIx
- * @param[in]			- enable or disable
- * @param[in]			- none
- *
- * @return				- none
- *
- * @Note				- none
- *
- ********************************************************/
-
-void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
-{
-	if(EnOrDi == ENABLE)
-	{
-		pSPIx->CR1 |= ( 1 << SPI_CR1_SPE);
-	}else
-	{
-		pSPIx->CR1 &= ~( 1 << SPI_CR1_SPE);
-	}
 }
 
 /********************************************************
