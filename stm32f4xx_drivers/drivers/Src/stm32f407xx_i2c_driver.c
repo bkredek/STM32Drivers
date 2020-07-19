@@ -14,6 +14,7 @@ uint32_t RCC_GetPLLOutputClock(void);
 static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2cx);
 static void I2C_ExecuteAddressPhase(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddr);
 static void I2C_ClearADDRFlag(I2C_RegDef_t *pI2Cx);
+static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
 
 // prescaler for ahb
 
@@ -37,6 +38,9 @@ uint8_t APB1_PreScaler[4] = {2, 4, 8, 16};
 
 void I2C_Init(I2C_Handle_t *pI2CHandle) {
 	uint32_t tempreg = 0;
+
+	// enable the clock for I2Cx
+	I2C_PeriClockControl(pI2CHandle->pI2Cx, ENABLE);
 
 	// enable acking
 
@@ -80,7 +84,16 @@ void I2C_Init(I2C_Handle_t *pI2CHandle) {
 	pI2CHandle->pI2Cx->CCR = tempreg;
 
 	// configure rise time for I2C pins
+	if(pI2CHandle->I2C_Config.I2C_SCLSpeed <= I2C_SCL_SPEED_SM) {
+		// standard mode
 
+		tempreg = (RCC_GetPCLK1Value() / 1000000U) +1;
+	}else {
+		// fast mode
+		tempreg = ((RCC_GetPCLK1Value() * 300) / 1000000U) + 1;
+	}
+
+	pI2CHandle->pI2Cx->TRISE = (tempreg & 0x3F);
 
 
 }
@@ -220,13 +233,22 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t L
 	I2C_ClearADDRFlag(pI2CHandle->pI2Cx);
 
 	// 6. Send the data until Len become 0
+	while(Len > 0) {
+		while(!I2C_GetFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_TXE));
+		pI2CHandle->pI2Cx->DR = *pTxbuffer;
+		pTxbuffer++;
+		Len--;
+	}
 
 	// 7. When Len becomes zero wait for TXE = 1 and BTF = 1 before generating the STOP condition
 	// Note: TXE = 1, BTF = 1, means that both SR and DR are empty and next transmission should begin
 	// when BTF = 1 SCL will be stretched (pulled to low)
+	while(!I2C_GetFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_TXE));
+	while(!I2C_GetFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_BTF));
 
 	// 8. Generate STOP condition and master need not to wait for the completion of stop condition.
 	// Note: Generating STOP, automatically clears BTF
+	I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
 }
 
 /********************************************************
@@ -317,6 +339,26 @@ uint32_t RCC_GetPCLK1Value(void) {
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2cx) {
 	pI2cx->CR1 |= (1 << I2C_CR1_START);
+}
+
+/********************************************************
+ * @fn					- I2C_GenerateStopCondition
+ *
+ * @brief				- API to generate stop condition
+ *
+ * @param[in]			- handle to the I2Cx
+ * @param[in]			- none
+ * @param[in]			- none
+ * @param[in]			- none
+ *
+ * @return				- none
+ *
+ * @Note				- none
+ *
+ ********************************************************/
+
+static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx) {
+	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
 }
 
 /********************************************************
