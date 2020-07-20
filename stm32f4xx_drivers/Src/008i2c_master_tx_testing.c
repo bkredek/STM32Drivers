@@ -16,7 +16,7 @@ uint8_t someData[] = "We are testing I2C master Tx\n";
 
 /*
  * PB6 - SCL line
- * PB9 - SDA line
+ * PB7 - SDA line
  */
 
 I2C_Handle_t I2C1Handle;
@@ -41,7 +41,7 @@ void I2C1_GPIOInits(void) {
 	GPIO_Init(&I2CPins);
 
 	//sda
-	I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_9;
+	I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_7;
 	GPIO_Init(&I2CPins);
 }
 
