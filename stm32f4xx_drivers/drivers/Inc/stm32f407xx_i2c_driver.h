@@ -92,8 +92,8 @@ void I2C_DeInit(I2C_Handle_t *pI2CHandle);
  * Data Send and Recive
  */
 
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr);
-void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr);
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
+void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
 
 /*
  * IRQ Configuration and ISR handling
@@ -121,5 +121,7 @@ void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t EnOrDi);
 
 void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEv);
 
+#define I2C_DISABLE_SR					RESET
+#define I2C_ENABLE_SR					SET
 
 #endif /* INC_STM32F407XX_I2C_DRIVER_H_ */

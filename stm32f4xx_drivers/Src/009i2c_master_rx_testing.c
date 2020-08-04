@@ -9,6 +9,9 @@
 #include <string.h>
 #include <stdio.h>
 
+// semihosting printf debug option
+extern void initialise_monitor_handles(void);
+
 #define MY_ADDR					0x61
 #define SLAVE_ADDR				0x68
 
@@ -71,6 +74,8 @@ void GPIO_ButtonInit(void) {
 
 int main(void) {
 
+	initialise_monitor_handles();
+
 	uint8_t commandcode;
 	uint8_t len;
 
@@ -96,17 +101,19 @@ int main(void) {
 
 		commandcode = 0x51;
 		// sending command code
-		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDR);
+		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDR, I2C_ENABLE_SR);
 		// len of rcv data
-		I2C_MasterReciveData(&I2C1Handle, &len, 1, SLAVE_ADDR);
+		I2C_MasterReciveData(&I2C1Handle, &len, 1, SLAVE_ADDR, I2C_ENABLE_SR);
 
 		commandcode = 0x52;
-		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDR);
+		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDR, I2C_ENABLE_SR);
 
 		// receive data
-		I2C_MasterReciveData(&I2C1Handle, rcv_buff, len, SLAVE_ADDR);
+		I2C_MasterReciveData(&I2C1Handle, rcv_buff, len, SLAVE_ADDR, I2C_DISABLE_SR);
 
+		printf("Message from the Arduino: %s\n", rcv_buff);
 	}
+
 
 	return 0;
 }

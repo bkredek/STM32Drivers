@@ -216,7 +216,7 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDi)
  *
  ********************************************************/
 
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr) {
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr) {
 	// 1. Generate the START condition
 	I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
 
@@ -250,7 +250,9 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t L
 
 	// 8. Generate STOP condition and master need not to wait for the completion of stop condition.
 	// Note: Generating STOP, automatically clears BTF
-	I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+	if(Sr == I2C_DISABLE_SR) {
+		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+	}
 }
 
 /********************************************************
@@ -269,7 +271,7 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t L
  *
  ********************************************************/
 
-void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr) {
+void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr) {
 	// 1. Generate start condition
 	I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
 	// 2. Confirm that start generation is completed by checking the SB flag in SR1 register
@@ -289,7 +291,9 @@ void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t
 		//Wait until RXNE becomes 1
 		while(!I2C_GetFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_RXNE));
 		//Generate STOP condition
-		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+		if(Sr == I2C_DISABLE_SR) {
+			I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+		}
 
 		//Read data into buffer
 		*pRxbuffer = pI2CHandle->pI2Cx->DR;
@@ -308,7 +312,9 @@ void I2C_MasterReciveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t
 				//clear the ack bit
 				I2C_ManageAcking(pI2CHandle->pI2Cx, I2C_ACK_DISABLE);
 				//generate stop condition
-				I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+				if(Sr == I2C_DISABLE_SR) {
+					I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+				}
 			}
 			//read the data from data register in to buffer
 			*pRxbuffer = pI2CHandle->pI2Cx->DR;
