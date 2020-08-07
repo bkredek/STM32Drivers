@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 // semihosting printf debug option
-extern void initialise_monitor_handles(void);
+//extern void initialise_monitor_handles(void);
 
 #define MY_ADDR					0x61
 #define SLAVE_ADDR				0x68
@@ -74,7 +74,7 @@ void GPIO_ButtonInit(void) {
 
 int main(void) {
 
-	initialise_monitor_handles();
+	//initialise_monitor_handles();
 
 	uint8_t commandcode;
 	uint8_t len;
